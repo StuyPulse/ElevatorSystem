@@ -14,4 +14,19 @@ import com.stuypulse.stuylib.network.SmartNumber;
  * We use StuyLib's SmartNumber / SmartBoolean in order to have tunable
  * values that we can edit on Shuffleboard.
  */
-public final class Settings {}
+public final class Settings {
+	public interface Elevator {
+		public interface Feedforward {
+			double kG = 0.001;
+			double kS = -1;
+			double kV = -1;
+			double kA = -1;
+		}
+
+		public interface Feedback {
+			double kP = -1;
+			double kI = -1;
+			double kD = -1;
+		}
+	}
+}
