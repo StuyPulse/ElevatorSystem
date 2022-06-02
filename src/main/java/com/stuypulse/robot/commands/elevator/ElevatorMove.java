@@ -1,6 +1,6 @@
 package com.stuypulse.robot.commands.elevator;
 
-import com.stuypulse.robot.subsystems.Elevator;
+import com.stuypulse.robot.subsystems.elevator.Elevator;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
