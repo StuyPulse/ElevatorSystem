@@ -8,6 +8,10 @@ package com.stuypulse.robot.constants;
 import com.stuypulse.stuylib.control.PIDController;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 /*-
  * File containing tunable settings for every subsystem on the robot.
@@ -16,6 +20,8 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
  * values that we can edit on Shuffleboard.
  */
 public final class Settings {
+	public static double DT = 0.02;
+
 	public interface Elevator {
 		public interface Feedforward {
 			double kG = 0.001;
@@ -35,6 +41,18 @@ public final class Settings {
 
 			public static PIDController getFeedback() {
 				return new PIDController(kP, kI, kD);
+			}
+		}
+
+		public interface System {
+			public static FlywheelSim getSystem() {
+				double GEARING = 1;
+
+				return new FlywheelSim(
+					LinearSystemId.identifyVelocitySystem(Feedforward.kV, Feedforward.kA),
+					DCMotor.getNeo550(1),
+					GEARING
+				);
 			}
 		}
 	}
