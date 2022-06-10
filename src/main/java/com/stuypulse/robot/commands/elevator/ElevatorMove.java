@@ -11,13 +11,13 @@ public class ElevatorMove extends TrapezoidProfileCommand {
 			new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration),
 			new TrapezoidProfile.State(distance, 0)
 			),
-			elevator::setState,
+			elevator::setTargetState,
 			elevator
 		);
 	}
 
 	public ElevatorMove(Elevator elevator, TrapezoidProfile profile) {
-		super(profile, elevator::setState, elevator);
+		super(profile, elevator::setTargetState, elevator);
 	}
 
 

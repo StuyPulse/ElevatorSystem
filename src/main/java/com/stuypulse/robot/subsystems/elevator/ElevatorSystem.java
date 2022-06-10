@@ -7,6 +7,7 @@ import com.stuypulse.stuylib.control.Controller;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class ElevatorSystem extends SubsystemBase {
@@ -15,7 +16,6 @@ public abstract class ElevatorSystem extends SubsystemBase {
 	private State targetState;
 
 	// Simulation
-	private double simDistance;
 	private FlywheelSim sim;
 
 	public ElevatorSystem(ElevatorFeedforward feedforward, Controller feedback) {
@@ -24,20 +24,22 @@ public abstract class ElevatorSystem extends SubsystemBase {
 		
 		targetState = new State(0, 0);
 
-		simDistance = 0;
 		sim = System.getSystem();
 	}
 
-	public void setState(State state) {
+	public void setTargetState(State state) {
 		targetState = state;
 	}
+
+	public State getTargetState() {
+		return targetState;
+	}
+
+	protected abstract State getState();
 
 	protected abstract void setVoltage(double voltage);
 	protected abstract double getVoltage();
 
-	protected abstract double getVelocity();
-
-	protected abstract double getEncoderDistance();
 	protected abstract void setEncoderDistance(double distance);
 
 	@Override
@@ -46,7 +48,7 @@ public abstract class ElevatorSystem extends SubsystemBase {
 		sim.update(Settings.DT);
 
 		double rate = sim.getAngularVelocityRPM();
-		setEncoderDistance(getEncoderDistance() + rate * Settings.DT);
+		setEncoderDistance(getState().position + rate * Settings.DT);
 	}
 
 	@Override
@@ -54,8 +56,13 @@ public abstract class ElevatorSystem extends SubsystemBase {
 		// TODO: check if acceleration is required for feedforward
 		double voltage =
 			feedforward.calculate(targetState.velocity) +
-			feedback.update(targetState.velocity, getVelocity());
+			feedback.update(targetState.velocity, getState().velocity);
 		
 		setVoltage(voltage);
+
+		SmartDashboard.putNumber("Elevator/EncoderDistance", getState().position);
+		SmartDashboard.putNumber("Elevator/Voltage", getVoltage());
+		SmartDashboard.putNumber("Elevator/Rate", sim.getAngularVelocityRPM());
+		SmartDashboard.putNumber("Elevator/Voltage", getVoltage());
 	}
 }

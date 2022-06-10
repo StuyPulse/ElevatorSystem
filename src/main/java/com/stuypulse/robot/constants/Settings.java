@@ -25,9 +25,9 @@ public final class Settings {
 	public interface Elevator {
 		public interface Feedforward {
 			double kG = 0.001;
-			double kS = -1;
-			double kV = -1;
-			double kA = -1;
+			double kS = 0;
+			double kV = 0.5;
+			double kA = 0.1;
 
 			public static ElevatorFeedforward getFeedforward() {
 				return new ElevatorFeedforward(kS, kG, kV, kA);
@@ -35,9 +35,9 @@ public final class Settings {
 		}
 
 		public interface Feedback {
-			double kP = -1;
-			double kI = -1;
-			double kD = -1;
+			double kP = 1;
+			double kI = 0;
+			double kD = 0.2;
 
 			public static PIDController getFeedback() {
 				return new PIDController(kP, kI, kD);
@@ -45,9 +45,9 @@ public final class Settings {
 		}
 
 		public interface System {
-			public static FlywheelSim getSystem() {
-				double GEARING = 1;
+			double GEARING = 1;
 
+			public static FlywheelSim getSystem() {
 				return new FlywheelSim(
 					LinearSystemId.identifyVelocitySystem(Feedforward.kV, Feedforward.kA),
 					DCMotor.getNeo550(1),

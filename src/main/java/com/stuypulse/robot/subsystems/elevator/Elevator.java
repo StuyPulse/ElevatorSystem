@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.stuypulse.robot.constants.Settings.Elevator.Feedback;
 import com.stuypulse.robot.constants.Settings.Elevator.Feedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 public class Elevator extends ElevatorSystem {
 	private final CANSparkMax motor;
@@ -18,13 +19,13 @@ public class Elevator extends ElevatorSystem {
 	}
 
 	@Override
-	protected void setVoltage(double voltage) {
-		motor.set(voltage);
+	public State getState() {
+		return new State(encoder.getPosition(), encoder.getVelocity());
 	}
 
 	@Override
-	protected double getVelocity() {
-		return encoder.getVelocity();
+	protected void setVoltage(double voltage) {
+		motor.set(voltage);
 	}
 
 	@Override
@@ -33,13 +34,7 @@ public class Elevator extends ElevatorSystem {
 	}
 
 	@Override
-	protected double getEncoderDistance() {
-		return encoder.getPosition();
-	}
-
-	@Override
 	protected void setEncoderDistance(double distance) {
 		encoder.setPosition(distance);
-		
 	}
 }
