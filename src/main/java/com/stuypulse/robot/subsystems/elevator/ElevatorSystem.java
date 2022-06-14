@@ -9,7 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+// elevatorsim, rpm to meters per second
 public abstract class ElevatorSystem extends SubsystemBase {
 	private final ElevatorFeedforward feedforward;
 	private final Controller feedback;
@@ -38,18 +38,19 @@ public abstract class ElevatorSystem extends SubsystemBase {
 	protected abstract State getState();
 
 	protected abstract void setVoltage(double voltage);
-	protected abstract double getVoltage();
 
 	protected abstract void setEncoderDistance(double distance);
 
 	@Override
 	public void simulationPeriodic() {
-		sim.setInputVoltage(getVoltage());
+		sim.setInputVoltage(nowVolts);
 		sim.update(Settings.DT);
 
 		double rate = sim.getAngularVelocityRPM();
 		setEncoderDistance(getState().position + rate * Settings.DT);
 	}
+
+	double nowVolts = 0;
 
 	@Override
 	public void periodic() {
@@ -58,11 +59,10 @@ public abstract class ElevatorSystem extends SubsystemBase {
 			feedforward.calculate(targetState.velocity) +
 			feedback.update(targetState.velocity, getState().velocity);
 		
-		setVoltage(voltage);
+		setVoltage(nowVolts = voltage);
 
 		SmartDashboard.putNumber("Elevator/EncoderDistance", getState().position);
-		SmartDashboard.putNumber("Elevator/Voltage", getVoltage());
+		SmartDashboard.putNumber("Elevator/Voltage", nowVolts);
 		SmartDashboard.putNumber("Elevator/Rate", sim.getAngularVelocityRPM());
-		SmartDashboard.putNumber("Elevator/Voltage", getVoltage());
 	}
 }

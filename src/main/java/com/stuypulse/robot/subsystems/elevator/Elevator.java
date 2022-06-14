@@ -29,11 +29,6 @@ public class Elevator extends ElevatorSystem {
 	}
 
 	@Override
-	protected double getVoltage() {
-		return motor.get();
-	}
-
-	@Override
 	protected void setEncoderDistance(double distance) {
 		encoder.setPosition(distance);
 	}

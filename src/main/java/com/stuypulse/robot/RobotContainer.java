@@ -7,8 +7,11 @@ package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.elevator.ElevatorMove;
+import com.stuypulse.robot.commands.elevator.PoopedCommand;
+import com.stuypulse.robot.commands.elevator.ScuffedCommand;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.elevator.Elevator;
+import com.stuypulse.robot.subsystems.elevator.LiftTest;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -19,7 +22,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
 
   // Subsystem
-  private final Elevator elevator = new Elevator();
+  // private final Elevator elevator = new Elevator();
+  private final LiftTest lift = new LiftTest();
 
   // Gamepads
   public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);
@@ -40,7 +44,9 @@ public class RobotContainer {
   /*** DEFAULTS ***/
   /****************/
 
-  private void configureDefaultCommands() {}
+  private void configureDefaultCommands() {
+    lift.setDefaultCommand(new PoopedCommand(driver, lift));
+  }
 
   /***************/
   /*** BUTTONS ***/
@@ -53,7 +59,8 @@ public class RobotContainer {
   /**************/
 
   public void configureAutons() {
-    autonChooser.setDefaultOption("ElevatorMove", new ElevatorMove(elevator, 5, 5, 10));
+    // autonChooser.setDefaultOption("ElevatorMove", new ElevatorMove(elevator, 5, 5, 10));
+    autonChooser.setDefaultOption("Scuffed", new ScuffedCommand(lift));
     autonChooser.addOption("Do Nothing", new DoNothingAuton());
 
     SmartDashboard.putData("Autonomous", autonChooser);
