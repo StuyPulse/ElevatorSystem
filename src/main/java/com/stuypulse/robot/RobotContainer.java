@@ -6,11 +6,14 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
+import com.stuypulse.robot.commands.auton.ToHeightAuton;
 import com.stuypulse.robot.commands.elevator.ElevatorMove;
+import com.stuypulse.robot.commands.elevator.ToHome;
 import com.stuypulse.robot.commands.elevator.ElevatorDrive;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.elevator.Elevator;
-import com.stuypulse.robot.subsystems.elevator.LiftTest;
+import com.stuypulse.robot.subsystems.elevator.Wildcard;
+import com.stuypulse.robot.subsystems.elevator.Wildcard;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -22,7 +25,7 @@ public class RobotContainer {
 
   // Subsystem
   // private final Elevator elevator = new Elevator();
-  private final LiftTest lift = new LiftTest();
+  public final Wildcard lift = new Wildcard();
 
   // Gamepads
   public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);
@@ -51,7 +54,9 @@ public class RobotContainer {
   /*** BUTTONS ***/
   /***************/
 
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    // driver.getBottomButton().whileHeld(new ToHome(lift), true);
+  }
 
   /**************/
   /*** AUTONS ***/
@@ -60,6 +65,7 @@ public class RobotContainer {
   public void configureAutons() {
     // autonChooser.setDefaultOption("ElevatorMove", new ElevatorMove(elevator, 5, 5, 10));
     autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
+    autonChooser.addOption("To Height Auton", new ToHeightAuton(this));
 
     SmartDashboard.putData("Autonomous", autonChooser);
   }

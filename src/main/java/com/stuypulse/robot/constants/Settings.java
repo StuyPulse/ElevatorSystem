@@ -47,6 +47,11 @@ public final class Settings {
 		public interface System {
 			double GEARING = 1;
 
+			double ENCODER_MULTIPLIER = 6.175038019510E-5 * 0.0254;
+
+			double MAX_ACCELERATION = 1;
+			double MAX_VELOCITY = 1.5;
+
 			public static FlywheelSim getSystem() {
 				return new FlywheelSim(
 					LinearSystemId.identifyVelocitySystem(Feedforward.kV, Feedforward.kA),

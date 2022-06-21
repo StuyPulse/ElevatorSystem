@@ -1,6 +1,7 @@
 package com.stuypulse.robot.commands.elevator;
 
-import com.stuypulse.robot.subsystems.elevator.LiftTest;
+import com.stuypulse.robot.constants.Settings.Elevator;
+import com.stuypulse.robot.subsystems.elevator.Wildcard;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.streams.IStream;
 import com.stuypulse.stuylib.streams.filters.LowPassFilter;
@@ -8,13 +9,13 @@ import com.stuypulse.stuylib.streams.filters.LowPassFilter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ElevatorDrive extends CommandBase {
-	private final LiftTest lift;
+	private final Wildcard lift;
 	private final IStream input;
 
-	public ElevatorDrive(Gamepad gamepad, LiftTest lift) {
+	public ElevatorDrive(Gamepad gamepad, Wildcard lift) {
 		this.lift = lift;
 		input = IStream.create(gamepad::getLeftY)
-			.filtered(new LowPassFilter(0.2), x->x*12);
+			.filtered(new LowPassFilter(0.2));
 
 		addRequirements(lift);
 	}
