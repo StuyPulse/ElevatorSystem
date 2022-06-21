@@ -6,7 +6,7 @@ import com.stuypulse.stuylib.control.Controller;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,7 +16,7 @@ public abstract class ElevatorSystem extends SubsystemBase {
 	private State targetState;
 
 	// Simulation
-	private FlywheelSim sim;
+	private ElevatorSim sim;
 
 	public ElevatorSystem(ElevatorFeedforward feedforward, Controller feedback) {
 		this.feedforward = feedforward;
@@ -24,8 +24,10 @@ public abstract class ElevatorSystem extends SubsystemBase {
 		
 		targetState = new State(0, 0);
 
-		sim = System.getSystem();
+		sim = System.getSim();
 	}
+
+	// State
 
 	public void setTargetState(State state) {
 		targetState = state;
@@ -47,13 +49,12 @@ public abstract class ElevatorSystem extends SubsystemBase {
 		sim.setInputVoltage(getVoltage());
 		sim.update(Settings.DT);
 
-		double rate = sim.getAngularVelocityRPM();
+		double rate = sim.getVelocityMetersPerSecond();
 		setEncoderDistance(getState().position + rate * Settings.DT);
 	}
 
 	@Override
 	public void periodic() {
-		// TODO: check if acceleration is required for feedforward
 		double voltage =
 			feedforward.calculate(targetState.velocity) +
 			feedback.update(targetState.velocity, getState().velocity);
@@ -62,7 +63,7 @@ public abstract class ElevatorSystem extends SubsystemBase {
 
 		SmartDashboard.putNumber("Elevator/EncoderDistance", getState().position);
 		SmartDashboard.putNumber("Elevator/Voltage", getVoltage());
-		SmartDashboard.putNumber("Elevator/Rate", sim.getAngularVelocityRPM());
+		SmartDashboard.putNumber("Elevator/Rate", sim.getVelocityMetersPerSecond());
 		SmartDashboard.putNumber("Elevator/Voltage", getVoltage());
 	}
 }
