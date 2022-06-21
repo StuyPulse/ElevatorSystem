@@ -7,8 +7,7 @@ package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.elevator.ElevatorMove;
-import com.stuypulse.robot.commands.elevator.PoopedCommand;
-import com.stuypulse.robot.commands.elevator.ScuffedCommand;
+import com.stuypulse.robot.commands.elevator.ElevatorDrive;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.elevator.Elevator;
 import com.stuypulse.robot.subsystems.elevator.LiftTest;
@@ -45,7 +44,7 @@ public class RobotContainer {
   /****************/
 
   private void configureDefaultCommands() {
-    lift.setDefaultCommand(new PoopedCommand(driver, lift));
+    lift.setDefaultCommand(new ElevatorDrive(driver, lift));
   }
 
   /***************/
@@ -60,8 +59,7 @@ public class RobotContainer {
 
   public void configureAutons() {
     // autonChooser.setDefaultOption("ElevatorMove", new ElevatorMove(elevator, 5, 5, 10));
-    autonChooser.setDefaultOption("Scuffed", new ScuffedCommand(lift));
-    autonChooser.addOption("Do Nothing", new DoNothingAuton());
+    autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
 
     SmartDashboard.putData("Autonomous", autonChooser);
   }

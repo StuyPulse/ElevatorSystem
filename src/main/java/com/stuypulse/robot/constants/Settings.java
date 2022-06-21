@@ -24,7 +24,7 @@ public final class Settings {
 
 	public interface Elevator {
 		public interface Feedforward {
-			double kG = 0.001;
+			double kG = 1.3;
 			double kS = 0;
 			double kV = 0.5;
 			double kA = 0.1;

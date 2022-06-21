@@ -7,20 +7,20 @@ import com.stuypulse.stuylib.streams.filters.LowPassFilter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class PoopedCommand extends CommandBase {
+public class ElevatorDrive extends CommandBase {
 	private final LiftTest lift;
 	private final IStream input;
 
-	public PoopedCommand(Gamepad gamepad, LiftTest lift) {
+	public ElevatorDrive(Gamepad gamepad, LiftTest lift) {
 		this.lift = lift;
 		input = IStream.create(gamepad::getLeftY)
-			.filtered(new LowPassFilter(0.2));
+			.filtered(new LowPassFilter(0.2), x->x*12);
 
 		addRequirements(lift);
 	}
 
 	@Override
-	public void initialize() {
+	public void execute() {
 		lift.set(input.get());
 	}
 

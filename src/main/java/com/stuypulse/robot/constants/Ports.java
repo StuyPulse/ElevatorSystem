@@ -12,4 +12,14 @@ public final class Ports {
         int OPERATOR = 1;
         int DEBUGGER = 2;
     }
+
+    public interface Elevator {
+        int TALON_SIDE_MASTER = 7;
+        int TALON_SIDE_FOLLOWER = 9;
+        int VICTOR_LEFT = 8;
+        int VICTOR_RIGHT = 10;
+
+        int TOP_LIMIT_SWITCH = 2;
+        int BOTTOM_LIMIT_SWITCH = 0;
+    }
 }
