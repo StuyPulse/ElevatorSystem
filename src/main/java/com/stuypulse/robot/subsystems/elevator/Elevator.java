@@ -6,6 +6,7 @@ import com.stuypulse.stuylib.control.Controller;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +19,7 @@ public abstract class Elevator extends SubsystemBase {
 	private State targetState;
 
 	// Simulation
-	private FlywheelSim sim;
+	private ElevatorSim sim;
 
 	public Elevator(ElevatorFeedforward feedforward, Controller velFeedback, Controller feedback) {
 		this.feedforward = feedforward;
@@ -27,7 +28,7 @@ public abstract class Elevator extends SubsystemBase {
 		
 		targetState = new State(0, 0);
 
-		sim = System.getSystem();
+		sim = System.getSim();
 	}
 
 	// State
@@ -53,7 +54,7 @@ public abstract class Elevator extends SubsystemBase {
 		sim.setInputVoltage(nowVolts);
 		sim.update(Settings.DT);
 
-		double rate = sim.getAngularVelocityRPM();
+		double rate = sim.getVelocityMetersPerSecond();
 		setDistance(getState().position + rate * Settings.DT);
 	}
 
