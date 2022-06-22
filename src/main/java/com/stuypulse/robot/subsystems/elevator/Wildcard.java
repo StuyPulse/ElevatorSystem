@@ -25,7 +25,11 @@ public class Wildcard extends Elevator {
 	private DigitalInput bottomLimit;
 
 	public Wildcard() {
-		super(Settings.Elevator.Feedforward.getFeedforward(), Settings.Elevator.Feedback.getFeedback());
+		super(
+			Settings.Elevator.Feedforward.getFeedforward(),
+			Settings.Elevator.Feedback.getVelFeedback(),
+			Settings.Elevator.Feedback.getFeedback()
+		);
 
 		sideMaster = Config.configTalonSRX(Ports.Elevator.TALON_SIDE_MASTER, true);
 		sideFollower = Config.configTalonSRX(Ports.Elevator.TALON_SIDE_FOLLOWER, true);
@@ -101,19 +105,19 @@ public class Wildcard extends Elevator {
 
 	@Override
 	public void periodic() {
-		SmartDashboard.putNumber("Motor " + sideMaster.getDeviceID() + " Voltage", sideMaster.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Motor " + sideFollower.getDeviceID() + " Voltage", sideFollower.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Motor " + left.getDeviceID() + " Voltage", left.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Motor " + right.getDeviceID() + " Voltage", right.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Elevator/Motor " + sideMaster.getDeviceID() + " Voltage", sideMaster.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Elevator/Motor " + sideFollower.getDeviceID() + " Voltage", sideFollower.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Elevator/Motor " + left.getDeviceID() + " Voltage", left.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Elevator/Motor " + right.getDeviceID() + " Voltage", right.getMotorOutputVoltage());
 
-		SmartDashboard.putNumber("Motor " + sideMaster.getDeviceID() + " Output Percent", sideMaster.getMotorOutputPercent());
-		SmartDashboard.putNumber("Motor " + sideFollower.getDeviceID() + " Output Percent", sideFollower.getMotorOutputPercent());
-		SmartDashboard.putNumber("Motor " + left.getDeviceID() + " Output Percent", left.getMotorOutputPercent());
-		SmartDashboard.putNumber("Motor " + right.getDeviceID() + " Output Percent", right.getMotorOutputPercent());
+		SmartDashboard.putNumber("Elevator/Motor " + sideMaster.getDeviceID() + " Output Percent", sideMaster.getMotorOutputPercent());
+		SmartDashboard.putNumber("Elevator/Motor " + sideFollower.getDeviceID() + " Output Percent", sideFollower.getMotorOutputPercent());
+		SmartDashboard.putNumber("Elevator/Motor " + left.getDeviceID() + " Output Percent", left.getMotorOutputPercent());
+		SmartDashboard.putNumber("Elevator/Motor " + right.getDeviceID() + " Output Percent", right.getMotorOutputPercent());
 
-		SmartDashboard.putNumber("Encoder Position", getDistance());
+		SmartDashboard.putNumber("Elevator/Encoder Position", getDistance());
 
-		SmartDashboard.putBoolean("Top Limit Switch", isTopLimitTriggered());
-		SmartDashboard.putBoolean("Bottom Limit Switch", isBottomLimitTriggered());
+		SmartDashboard.putBoolean("Elevator/Top Limit Switch", isTopLimitTriggered());
+		SmartDashboard.putBoolean("Elevator/Bottom Limit Switch", isBottomLimitTriggered());
 	}
 }

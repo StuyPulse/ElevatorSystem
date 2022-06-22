@@ -8,7 +8,6 @@ package com.stuypulse.robot.constants;
 import com.stuypulse.stuylib.control.PIDController;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -35,9 +34,17 @@ public final class Settings {
 		}
 
 		public interface Feedback {
+			double VEL_kP = 1;
+			double VEL_kI = 0;
+			double VEL_kD = 0.2;
+
 			double kP = 1;
 			double kI = 0;
 			double kD = 0.2;
+
+			public static PIDController getVelFeedback() {
+				return new PIDController(VEL_kP, VEL_kI, VEL_kD);
+			}
 
 			public static PIDController getFeedback() {
 				return new PIDController(kP, kI, kD);

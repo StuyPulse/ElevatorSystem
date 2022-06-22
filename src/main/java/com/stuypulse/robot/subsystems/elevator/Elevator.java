@@ -7,19 +7,22 @@ import com.stuypulse.stuylib.control.Controller;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// elevatorsim, rpm to meters per second
+
 public abstract class Elevator extends SubsystemBase {
 
 	private final ElevatorFeedforward feedforward;
+	private final Controller velFeedback;
 	private final Controller feedback;
 	private State targetState;
 
 	// Simulation
 	private FlywheelSim sim;
 
-	public Elevator(ElevatorFeedforward feedforward, Controller feedback) {
+	public Elevator(ElevatorFeedforward feedforward, Controller velFeedback, Controller feedback) {
 		this.feedforward = feedforward;
+		this.velFeedback = velFeedback;
 		this.feedback = feedback;
 		
 		targetState = new State(0, 0);
@@ -58,10 +61,19 @@ public abstract class Elevator extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		double voltage =
-			feedforward.calculate(targetState.velocity) +
-			feedback.update(targetState.velocity, getState().velocity);
+		SmartDashboard.putNumber("Elevator/Target Position", targetState.position);
+		SmartDashboard.putNumber("Elevator/Target Velocity", targetState.velocity);
+		SmartDashboard.putNumber("Elevator/Vel Error", targetState.velocity - getState().velocity);
+		SmartDashboard.putNumber("Elevator/Position Error", targetState.position - getState().position);
+
+		double ff = feedforward.calculate(targetState.velocity);
+		double vel = velFeedback.update(targetState.velocity, getState().velocity);
+		double pos = feedback.update(targetState.position, getState().position);
+
+		SmartDashboard.putNumber("Elevator/Feedforward", ff);
+		SmartDashboard.putNumber("Elevator/Vel Feedback", vel);
+		SmartDashboard.putNumber("Elevator/Pos Feedback", pos);
 		
-		setVoltage(nowVolts = voltage);
+		setVoltage(nowVolts = ff + vel + pos);
 	}
 }
