@@ -8,9 +8,13 @@ package com.stuypulse.robot.constants;
 import com.stuypulse.stuylib.control.PIDController;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 /*-
  * File containing tunable settings for every subsystem on the robot.
@@ -22,6 +26,13 @@ public final class Settings {
 	public static double DT = 0.02;
 
 	public interface Elevator {
+		double MOTOR_RADIUS = Units.inchesToMeters(1);
+		
+		double MIN_HEIGHT = Units.inchesToMeters(5);
+		double MAX_HEIGHT = Units.inchesToMeters(80);
+
+		double MASS = Units.lbsToKilograms(50);
+
 		public interface Feedforward {
 			double kG = 1.3;
 			double kS = 0;
@@ -59,11 +70,23 @@ public final class Settings {
 			double MAX_ACCELERATION = 1;
 			double MAX_VELOCITY = 1.5;
 
-			public static FlywheelSim getSystem() {
-				return new FlywheelSim(
-					LinearSystemId.identifyVelocitySystem(Feedforward.kV, Feedforward.kA),
+			public static LinearSystem<N2, N1, N1> getSystem() {
+				return LinearSystemId.createElevatorSystem(
 					DCMotor.getNeo550(1),
+					MASS,
+					MOTOR_RADIUS,
 					GEARING
+				);
+			}
+
+			public static ElevatorSim getSim() {
+				return new ElevatorSim(
+					getSystem(),
+					DCMotor.getNeo550(1),
+					GEARING,
+					MOTOR_RADIUS,
+					MIN_HEIGHT,
+					MAX_HEIGHT
 				);
 			}
 		}
