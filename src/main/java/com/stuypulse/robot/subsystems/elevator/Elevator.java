@@ -1,40 +1,79 @@
 package com.stuypulse.robot.subsystems.elevator;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.stuypulse.robot.constants.Settings.Elevator.Feedback;
-import com.stuypulse.robot.constants.Settings.Elevator.Feedforward;
+import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.constants.Settings.Elevator.System;
+import com.stuypulse.stuylib.control.Controller;
+
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Elevator extends ElevatorSystem {
-	private final CANSparkMax motor;
-	private final RelativeEncoder encoder;
+public abstract class Elevator extends SubsystemBase {
 
-	public Elevator() {
-		super(Feedforward.getFeedforward(), Feedback.getFeedback());
+	private final ElevatorFeedforward feedforward;
+	private final Controller velFeedback;
+	private final Controller feedback;
+	private State targetState;
 
-		motor = new CANSparkMax(-1, MotorType.kBrushless);
-		encoder = motor.getEncoder();
+	// Simulation
+	private FlywheelSim sim;
+
+	public Elevator(ElevatorFeedforward feedforward, Controller velFeedback, Controller feedback) {
+		this.feedforward = feedforward;
+		this.velFeedback = velFeedback;
+		this.feedback = feedback;
+		
+		targetState = new State(0, 0);
+
+		sim = System.getSystem();
 	}
 
-	@Override
-	public State getState() {
-		return new State(encoder.getPosition(), encoder.getVelocity());
+	// State
+
+	public void setTargetState(State state) {
+		targetState = state;
 	}
 
-	@Override
-	protected void setVoltage(double voltage) {
-		motor.set(voltage);
+	public State getTargetState() {
+		return targetState;
 	}
 
-	@Override
-	protected double getVoltage() {
-		return motor.get();
-	}
+	public abstract State getState();
+
+	// Hardware methods
+
+	protected abstract void setVoltage(double voltage);
+
+	protected abstract void setDistance(double distance);
 
 	@Override
-	protected void setEncoderDistance(double distance) {
-		encoder.setPosition(distance);
+	public void simulationPeriodic() {
+		sim.setInputVoltage(nowVolts);
+		sim.update(Settings.DT);
+
+		double rate = sim.getAngularVelocityRPM();
+		setDistance(getState().position + rate * Settings.DT);
+	}
+
+	double nowVolts = 0;
+
+	@Override
+	public void periodic() {
+		SmartDashboard.putNumber("Elevator/Target Position", targetState.position);
+		SmartDashboard.putNumber("Elevator/Target Velocity", targetState.velocity);
+		SmartDashboard.putNumber("Elevator/Vel Error", targetState.velocity - getState().velocity);
+		SmartDashboard.putNumber("Elevator/Position Error", targetState.position - getState().position);
+
+		double ff = feedforward.calculate(targetState.velocity);
+		double vel = velFeedback.update(targetState.velocity, getState().velocity);
+		double pos = feedback.update(targetState.position, getState().position);
+
+		SmartDashboard.putNumber("Elevator/Feedforward", ff);
+		SmartDashboard.putNumber("Elevator/Vel Feedback", vel);
+		SmartDashboard.putNumber("Elevator/Pos Feedback", pos);
+		
+		setVoltage(nowVolts = ff + vel + pos);
 	}
 }

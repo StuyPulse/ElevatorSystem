@@ -34,7 +34,7 @@ public final class Settings {
 		double MASS = Units.lbsToKilograms(50);
 
 		public interface Feedforward {
-			double kG = 0.001;
+			double kG = 1.3;
 			double kS = 0;
 			double kV = 0.5;
 			double kA = 0.1;
@@ -45,9 +45,17 @@ public final class Settings {
 		}
 
 		public interface Feedback {
+			double VEL_kP = 1;
+			double VEL_kI = 0;
+			double VEL_kD = 0.2;
+
 			double kP = 1;
 			double kI = 0;
 			double kD = 0.2;
+
+			public static PIDController getVelFeedback() {
+				return new PIDController(VEL_kP, VEL_kI, VEL_kD);
+			}
 
 			public static PIDController getFeedback() {
 				return new PIDController(kP, kI, kD);
@@ -56,6 +64,11 @@ public final class Settings {
 
 		public interface System {
 			double GEARING = 1;
+
+			double ENCODER_MULTIPLIER = 6.175038019510E-5 * 0.0254;
+
+			double MAX_ACCELERATION = 1;
+			double MAX_VELOCITY = 1.5;
 
 			public static LinearSystem<N2, N1, N1> getSystem() {
 				return LinearSystemId.createElevatorSystem(
