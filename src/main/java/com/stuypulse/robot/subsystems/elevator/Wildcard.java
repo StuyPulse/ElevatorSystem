@@ -45,7 +45,7 @@ public class Wildcard extends Elevator {
 	}
 
 	public void set(double output) {
-		set( output * RobotController.getBatteryVoltage() );
+		set(output * RobotController.getBatteryVoltage() );
 	}
 
 	public void stop() {
@@ -68,25 +68,7 @@ public class Wildcard extends Elevator {
 	}
 
 	@Override
-	public void periodic() {
-		SmartDashboard.putNumber("Motor " + sideMaster.getDeviceID() + " Voltage", sideMaster.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Motor " + sideFollower.getDeviceID() + " Voltage", sideFollower.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Motor " + left.getDeviceID() + " Voltage", left.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Motor " + right.getDeviceID() + " Voltage", right.getMotorOutputVoltage());
-
-		SmartDashboard.putNumber("Motor " + sideMaster.getDeviceID() + " Output Percent", sideMaster.getMotorOutputPercent());
-		SmartDashboard.putNumber("Motor " + sideFollower.getDeviceID() + " Output Percent", sideFollower.getMotorOutputPercent());
-		SmartDashboard.putNumber("Motor " + left.getDeviceID() + " Output Percent", left.getMotorOutputPercent());
-		SmartDashboard.putNumber("Motor " + right.getDeviceID() + " Output Percent", right.getMotorOutputPercent());
-
-		SmartDashboard.putNumber("Encoder Position", getDistance());
-
-		SmartDashboard.putBoolean("Top Limit Switch", isTopLimitTriggered());
-		SmartDashboard.putBoolean("Bottom Limit Switch", isBottomLimitTriggered());
-	}
-
-	@Override
-	protected State getState() {
+	public State getState() {
 		return new State(getDistance(), getVelocity());
 	}
 
@@ -113,7 +95,25 @@ public class Wildcard extends Elevator {
 	}
 
 	@Override
-	protected void setEncoderDistance(double distance) {
+	protected void setDistance(double distance) {
 		sideMaster.setSelectedSensorPosition(distance / Settings.Elevator.System.ENCODER_MULTIPLIER);
+	}
+
+	@Override
+	public void periodic() {
+		SmartDashboard.putNumber("Motor " + sideMaster.getDeviceID() + " Voltage", sideMaster.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Motor " + sideFollower.getDeviceID() + " Voltage", sideFollower.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Motor " + left.getDeviceID() + " Voltage", left.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Motor " + right.getDeviceID() + " Voltage", right.getMotorOutputVoltage());
+
+		SmartDashboard.putNumber("Motor " + sideMaster.getDeviceID() + " Output Percent", sideMaster.getMotorOutputPercent());
+		SmartDashboard.putNumber("Motor " + sideFollower.getDeviceID() + " Output Percent", sideFollower.getMotorOutputPercent());
+		SmartDashboard.putNumber("Motor " + left.getDeviceID() + " Output Percent", left.getMotorOutputPercent());
+		SmartDashboard.putNumber("Motor " + right.getDeviceID() + " Output Percent", right.getMotorOutputPercent());
+
+		SmartDashboard.putNumber("Encoder Position", getDistance());
+
+		SmartDashboard.putBoolean("Top Limit Switch", isTopLimitTriggered());
+		SmartDashboard.putBoolean("Bottom Limit Switch", isBottomLimitTriggered());
 	}
 }

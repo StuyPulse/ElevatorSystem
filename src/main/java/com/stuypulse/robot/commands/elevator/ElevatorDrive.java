@@ -1,6 +1,5 @@
 package com.stuypulse.robot.commands.elevator;
 
-import com.stuypulse.robot.constants.Settings.Elevator;
 import com.stuypulse.robot.subsystems.elevator.Wildcard;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.streams.IStream;
