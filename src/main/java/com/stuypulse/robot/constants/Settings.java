@@ -29,13 +29,13 @@ public final class Settings {
 		double MOTOR_RADIUS = Units.inchesToMeters(1);
 		
 		double MIN_HEIGHT = Units.inchesToMeters(5);
-		double MAX_HEIGHT = Units.inchesToMeters(80);
+		double MAX_HEIGHT = Units.inchesToMeters(90);
 
 		double MASS = Units.lbsToKilograms(50);
 
 		public interface Feedforward {
 			double kG = 1.3;
-			double kS = 0;
+			double kS = 0.01;
 			double kV = 0.5;
 			double kA = 0.1;
 
@@ -63,7 +63,7 @@ public final class Settings {
 		}
 
 		public interface System {
-			double GEARING = 1;
+			double GEARING = 0.01;
 
 			double ENCODER_MULTIPLIER = 6.175038019510E-5 * 0.0254;
 

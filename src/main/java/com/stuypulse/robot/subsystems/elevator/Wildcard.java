@@ -15,14 +15,14 @@ import com.stuypulse.robot.constants.Motors.Elevator.Config;
 
 public class Wildcard extends Elevator {
 
-	private WPI_TalonSRX sideFollower;
-	private WPI_TalonSRX sideMaster;
-
-	private WPI_VictorSPX left;
-	private WPI_VictorSPX right;
-
-	private DigitalInput topLimit;
-	private DigitalInput bottomLimit;
+	private final WPI_TalonSRX sideFollower;
+	private final WPI_TalonSRX sideMaster;
+ 
+	private final WPI_VictorSPX left;
+	private final WPI_VictorSPX right;
+ 
+	private final DigitalInput topLimit;
+	private final DigitalInput bottomLimit;
 
 	public Wildcard() {
 		super(
@@ -49,10 +49,12 @@ public class Wildcard extends Elevator {
 	}
 
 	public void set(double output) {
-		set(output * RobotController.getBatteryVoltage() );
+		setVoltage(output * RobotController.getBatteryVoltage());
 	}
 
 	public void stop() {
+		volts = 0;
+
 		sideMaster.setVoltage(0);
 		sideFollower.setVoltage(0);
 		left.setVoltage(0);
@@ -91,6 +93,8 @@ public class Wildcard extends Elevator {
 			stop();
 			// sideMaster.setSelectedSensorPosition(MAX_HEIGHT); 
 		} else {
+			volts = voltage;
+
 			sideMaster.setVoltage(voltage);
 			sideFollower.setVoltage(voltage);
 			left.setVoltage(voltage);

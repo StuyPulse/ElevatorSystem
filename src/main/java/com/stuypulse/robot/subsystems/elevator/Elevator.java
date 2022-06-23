@@ -1,13 +1,14 @@
 package com.stuypulse.robot.subsystems.elevator;
 
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.constants.Settings.Elevator.System;
 import com.stuypulse.stuylib.control.Controller;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,7 +20,12 @@ public abstract class Elevator extends SubsystemBase {
 	private State targetState;
 
 	// Simulation
-	private ElevatorSim sim;
+	protected double volts;
+
+	private final ElevatorSim sim;
+	private final Mechanism2d mech;
+	private final MechanismRoot2d root;
+	private final MechanismLigament2d arm;
 
 	public Elevator(ElevatorFeedforward feedforward, Controller velFeedback, Controller feedback) {
 		this.feedforward = feedforward;
@@ -28,7 +34,14 @@ public abstract class Elevator extends SubsystemBase {
 		
 		targetState = new State(0, 0);
 
-		sim = System.getSim();
+		sim = Settings.Elevator.System.getSim();
+		mech = new Mechanism2d(3, 3);
+		root = mech.getRoot("Root", 1.5, 1);
+		arm = root.append(
+			new MechanismLigament2d("Elevator", 0, 0).append(
+				new MechanismLigament2d("Wrist", 1, 90)));
+		
+		SmartDashboard.putData("Elevator Mech", mech);
 	}
 
 	// State
@@ -51,14 +64,16 @@ public abstract class Elevator extends SubsystemBase {
 
 	@Override
 	public void simulationPeriodic() {
-		sim.setInputVoltage(nowVolts);
+		sim.setInputVoltage(volts);
 		sim.update(Settings.DT);
 
 		double rate = sim.getVelocityMetersPerSecond();
 		setDistance(getState().position + rate * Settings.DT);
-	}
 
-	double nowVolts = 0;
+		SmartDashboard.putNumber("Elevator/Sim/Rate", rate);
+
+		arm.setLength(getState().position);
+	}
 
 	@Override
 	public void periodic() {
@@ -75,6 +90,6 @@ public abstract class Elevator extends SubsystemBase {
 		SmartDashboard.putNumber("Elevator/Vel Feedback", vel);
 		SmartDashboard.putNumber("Elevator/Pos Feedback", pos);
 		
-		setVoltage(nowVolts = ff + vel + pos);
+		setVoltage(ff + vel + pos);
 	}
 }
