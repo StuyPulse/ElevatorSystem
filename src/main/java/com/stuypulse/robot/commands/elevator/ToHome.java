@@ -1,6 +1,6 @@
 package com.stuypulse.robot.commands.elevator;
 
-import com.stuypulse.robot.subsystems.elevator.Elevator;
+import com.stuypulse.robot.subsystems.Elevator;
 
 // TODO: maybe override isFinished to check if limit switches are enabled
 

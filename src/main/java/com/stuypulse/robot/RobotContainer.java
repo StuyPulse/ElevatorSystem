@@ -11,7 +11,7 @@ import com.stuypulse.robot.commands.elevator.ElevatorDrive;
 import com.stuypulse.robot.commands.elevator.ToHeight;
 import com.stuypulse.robot.commands.elevator.ToHome;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.subsystems.elevator.Wildcard;
+import com.stuypulse.robot.subsystems.Elevator;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
 
   // Subsystem
-  public final Wildcard lift = new Wildcard();
+  public final Elevator lift = new Elevator();
 
   // Gamepads
   public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);

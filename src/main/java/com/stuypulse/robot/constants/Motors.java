@@ -20,31 +20,33 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
  *  - The Open Loop Ramp Rate
  */
 public final class Motors {
-	public interface Elevator {
-		public interface Config {
-			public static WPI_TalonSRX configTalonSRX(int port, boolean inverted) {
-				WPI_TalonSRX talon = new WPI_TalonSRX(port);
+	public interface Config {
+		public static WPI_TalonSRX configTalonSRX(int port, boolean inverted) {
+			WPI_TalonSRX talon = new WPI_TalonSRX(port);
 
-				talon.setNeutralMode(NeutralMode.Brake);
-				
-				if (inverted) {
-					talon.setInverted(InvertType.InvertMotorOutput);
-				}
-
-				return talon;
+			talon.setNeutralMode(NeutralMode.Brake);
+			
+			if (inverted) {
+				talon.setInverted(InvertType.InvertMotorOutput);
+			} else {
+				talon.setInverted(InvertType.None);
 			}
 
-			public static WPI_VictorSPX configVictorSRX(int port, boolean inverted) {
-				WPI_VictorSPX victor = new WPI_VictorSPX(port);
+			return talon;
+		}
 
-				victor.setNeutralMode(NeutralMode.Brake);
-				
-				if (inverted) {
-					victor.setInverted(InvertType.InvertMotorOutput);
-				}
+		public static WPI_VictorSPX configVictorSRX(int port, boolean inverted) {
+			WPI_VictorSPX victor = new WPI_VictorSPX(port);
 
-				return victor;
+			victor.setNeutralMode(NeutralMode.Brake);
+			
+			if (inverted) {
+				victor.setInverted(InvertType.InvertMotorOutput);
+			} else {
+				victor.setInverted(InvertType.None);
 			}
+
+			return victor;
 		}
 	}
 }
