@@ -1,41 +1,63 @@
 package com.stuypulse.robot.commands.elevator;
 
-import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.subsystems.Elevator;
-import com.stuypulse.stuylib.input.Gamepad;
-import com.stuypulse.stuylib.streams.IStream;
-import com.stuypulse.stuylib.streams.filters.LowPassFilter;
+import static com.stuypulse.robot.constants.Settings.Elevator.*;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import com.stuypulse.robot.subsystems.IElevator;
+import com.stuypulse.robot.util.Derivative;
+import com.stuypulse.stuylib.input.Gamepad;
+
+import com.stuypulse.stuylib.streams.IStream;
+
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ElevatorDrive extends CommandBase {
-	private final Elevator lift;
-	private final IStream input;
+	private final IElevator lift;
 
-	public ElevatorDrive(Gamepad gamepad, Elevator lift) {
+	private final ElevatorFeedforward feedforward;
+	
+	private final IStream velocity;
+	private final IStream acceleration;
+
+	public ElevatorDrive(IElevator lift, Gamepad gamepad) {
 		this.lift = lift;
-		input = IStream.create(gamepad::getLeftY)
-			.filtered(new LowPassFilter(0.2), x->-x, x->x*3.0);
+
+		feedforward = Feedforward.getFeedforward();
+
+		velocity = IStream.create(gamepad::getLeftY)
+			.filtered(
+				x -> x * Controls.MAX_VELOCITY.get()
+				// new RateLimit(Controls.MAX_ACCELERATION)
+			);
+
+		acceleration = IStream.create(gamepad::getLeftY)
+			.filtered(
+				x -> x * Controls.MAX_VELOCITY.get(),
+				// new RateLimit(Controls.MAX_ACCELERATION),
+				new Derivative()
+			);
 
 		addRequirements(lift);
 	}
 
 	@Override
 	public void execute() {
-		SmartDashboard.putNumber("poop balls", input.get());
-		// lift.set(input.get());
-		lift.setTargetState(new State(0, input.get()));
+		double vel = velocity.get();
+		double acc = acceleration.get();
+
+		SmartDashboard.putNumber("Elevator/Target Velocity", vel);
+		SmartDashboard.putNumber("Elevator/Target Acceleration", acc);
+
+		double ff = feedforward.calculate(vel, acc);
+
+		SmartDashboard.putNumber("Elevator/FF", ff);
+
+		lift.setVoltage(ff);
 	}
 
 	@Override
-	public boolean isFinished() {
+	public boolean isFinished() { 
 		return false;
-	}
-
-	@Override
-	public void end(boolean interrupted) {
-		lift.setTargetState(new State(lift.getDistance(), 0));
 	}
 }

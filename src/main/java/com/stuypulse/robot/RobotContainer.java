@@ -5,15 +5,15 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.commands.auton.DoNothingAuton;
-import com.stuypulse.robot.commands.auton.ToHeightAuton;
 import com.stuypulse.robot.commands.elevator.ElevatorDrive;
-import com.stuypulse.robot.commands.elevator.ToHeight;
-import com.stuypulse.robot.commands.elevator.ToHome;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.Elevator;
+import com.stuypulse.robot.subsystems.IElevator;
+import com.stuypulse.robot.subsystems.SimElevator;
+import com.stuypulse.robot.util.BootlegXbox;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
+import com.stuypulse.stuylib.input.gamepads.keyboard.SimKeyGamepad;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,10 +22,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
 
   // Subsystem
-  public final Elevator lift = new Elevator();
-
+  public final IElevator elevator = new SimElevator();
   // Gamepads
-  public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);
+  public final Gamepad driver = new SimKeyGamepad();
+                                // new BootlegXbox(Ports.Gamepad.DRIVER);
   public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
 
   // Autons
@@ -44,7 +44,7 @@ public class RobotContainer {
   /****************/
 
   private void configureDefaultCommands() {
-    lift.setDefaultCommand(new ElevatorDrive(driver, lift));
+    elevator.setDefaultCommand(new ElevatorDrive(elevator, driver));
   }
 
   /***************/
@@ -52,7 +52,7 @@ public class RobotContainer {
   /***************/
 
   private void configureButtonBindings() {
-    driver.getBottomButton().whileHeld(new ToHome(lift), true);
+    // driver.getBottomButton().whileHeld(new ToHome(lift));
   }
 
   /**************/
@@ -60,7 +60,7 @@ public class RobotContainer {
   /**************/
 
   public void configureAutons() {
-    autonChooser.setDefaultOption("Halfway", new ToHeight(lift, 20));
+    // autonChooser.setDefaultOption("Halfway", new ToHeight(lift, 20));
     // autonChooser.setDefaultOption("ElevatorMove", new ElevatorMove(elevator, 5, 5, 10));
     // autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
     // autonChooser.addOption("To Height Auton", new ToHeightAuton(this));

@@ -6,6 +6,7 @@
 package com.stuypulse.robot.constants;
 
 import com.stuypulse.stuylib.control.PIDController;
+import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.numbers.N1;
@@ -26,12 +27,18 @@ public final class Settings {
 	public static double DT = 0.02;
 
 	public interface Elevator {
-		double MOTOR_RADIUS = Units.inchesToMeters(1);
 		
-		double MIN_HEIGHT = Units.inchesToMeters(5);
-		double MAX_HEIGHT = Units.inchesToMeters(90);
+		public interface Controls { 
+			SmartNumber VOLTAGE = new SmartNumber("Controls/Voltage", 8.0);
+			SmartNumber MAX_VELOCITY = new SmartNumber("Controls/Max Velocity", 3.0);
+			SmartNumber MAX_ACCELERATION = new SmartNumber("Controls/Max Acceleration", 3.0);
+		}
 
-		double MASS = Units.lbsToKilograms(50);
+		public interface Encoder {
+			double GEARING = 0.01;
+	
+			double ENCODER_MULTIPLIER = 6.175038019510E-5 * 0.0254;
+		}
 
 		public interface Feedforward {
 			double kG = 0.5;
@@ -51,45 +58,6 @@ public final class Settings {
 
 			public static PIDController getFeedback() {
 				return new PIDController(kP, kI, kD);
-			}
-		}
-
-		public interface VelFeedback {
-			double kP = 0.0;
-			double kI = 0;
-			double kD = 0.0;
-
-			public static PIDController getFeedback() {
-				return new PIDController(kP, kI, kD);
-			}
-		}
-
-		public interface System {
-			double GEARING = 0.01;
-
-			double ENCODER_MULTIPLIER = 6.175038019510E-5 * 0.0254;
-
-			double MAX_ACCELERATION = 5;
-			double MAX_VELOCITY = 2.5;
-
-			public static LinearSystem<N2, N1, N1> getSystem() {
-				return LinearSystemId.createElevatorSystem(
-					DCMotor.getNeo550(1),
-					MASS,
-					MOTOR_RADIUS,
-					GEARING
-				);
-			}
-
-			public static ElevatorSim getSim() {
-				return new ElevatorSim(
-					getSystem(),
-					DCMotor.getNeo550(1),
-					GEARING,
-					MOTOR_RADIUS,
-					MIN_HEIGHT,
-					MAX_HEIGHT
-				);
 			}
 		}
 	}

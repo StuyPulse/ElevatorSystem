@@ -13,17 +13,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Motors.Config;
-import com.stuypulse.robot.constants.Settings.Elevator.Feedback;
-import com.stuypulse.robot.constants.Settings.Elevator.Feedforward;
-import com.stuypulse.robot.constants.Settings.Elevator.VelFeedback;
-import com.stuypulse.stuylib.control.Controller;
 
-public class Elevator extends SubsystemBase {
 
-	private final ElevatorFeedforward feedforward;
-	private final Controller feedback, velFeedback;
-	private State targetState;
-
+public class Elevator extends IElevator {
+	
 	// Hardware
 
 	private final WPI_TalonSRX sideFollower;
@@ -35,11 +28,9 @@ public class Elevator extends SubsystemBase {
 	private final DigitalInput topLimit;
 	private final DigitalInput bottomLimit;
 
+
 	public Elevator() {
-		feedforward = Feedforward.getFeedforward();
-		feedback = Feedback.getFeedback();
-		velFeedback = VelFeedback.getFeedback();
-		targetState = new State(0, 0);
+		// Motors
 
 		sideMaster = Config.configTalonSRX(Ports.Elevator.TALON_SIDE_MASTER, false);
 		sideFollower = Config.configTalonSRX(Ports.Elevator.TALON_SIDE_FOLLOWER, false);
@@ -59,11 +50,11 @@ public class Elevator extends SubsystemBase {
 	}
 
 	public double getVelocity() { 
-		return sideMaster.getSelectedSensorVelocity() * -Settings.Elevator.System.ENCODER_MULTIPLIER / 60.0;
+		return sideMaster.getSelectedSensorVelocity() * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER / 60.0;
 	}
 
-	public double getDistance() {
-		return sideMaster.getSelectedSensorPosition() * -Settings.Elevator.System.ENCODER_MULTIPLIER;
+	public double getHeight() {
+		return sideMaster.getSelectedSensorPosition() * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER;
 	}
 
 	public boolean atTop() {
@@ -74,48 +65,36 @@ public class Elevator extends SubsystemBase {
 		return !bottomLimit.get();
 	}
 
-	public void setTargetState(State state) {
-		targetState = state;
-	}
+	// public void setTargetState(State state) {
+	// 	targetState = state;
+	// }
 
-	private void setVoltage(double voltage) {
+	public void setVoltage(double voltage) {
 		if (atBottom() && voltage < 0) {
 			DriverStation.reportWarning("Bottom Limit Switch reached", false);
 			sideMaster.setSelectedSensorPosition(0);
 			
-			sideMaster.setVoltage(0);
-			sideFollower.setVoltage(0);
-			left.setVoltage(0);
-			right.setVoltage(0);
+			voltage = 0.0;
 		} else if (atTop() && voltage > 0) {
 			DriverStation.reportWarning("Top Limit Switch reached", false);
-			setTargetState(new State(getDistance(), 0));
-		} else {
-			sideMaster.setVoltage(voltage);
-			sideFollower.setVoltage(voltage);
-			left.setVoltage(voltage);
-			right.setVoltage(voltage);
-		}
+
+			voltage = 0.0;
+		} 
+
+		sideMaster.setVoltage(voltage);
+		sideFollower.setVoltage(voltage);
+		left.setVoltage(voltage);
+		right.setVoltage(voltage);
 	}
 
 	@Override
 	public void periodic() {
-		SmartDashboard.putNumber("Elevator/Target Position", targetState.position);
-		SmartDashboard.putNumber("Elevator/Target Velocity", targetState.velocity);
-		SmartDashboard.putNumber("Elevator/Vel Error", targetState.velocity - getVelocity());
-		SmartDashboard.putNumber("Elevator/Position Error", targetState.position - getDistance());
-
+		SmartDashboard.putNumber("Elevator/Height", getHeight());
 		SmartDashboard.putNumber("Elevator/Velocity", getVelocity());
-		SmartDashboard.putNumber("Elevator/Position", getDistance());
+		SmartDashboard.putNumber("Elevator/Encoder Units", sideMaster.getSelectedSensorPosition());
 
-		double ff = feedforward.calculate(targetState.velocity);
-		double vel = 0;// velFeedback.update(targetState.velocity, getState().velocity);
-		double pos = 0;// feedback.update(targetState.position, getState().position);
-
-		SmartDashboard.putNumber("Elevator/Feedforward", ff);
-		SmartDashboard.putNumber("Elevator/Vel Feedback", vel);
-		SmartDashboard.putNumber("Elevator/Pos Feedback", pos);
-		
-		setVoltage(ff + vel + pos);
+		SmartDashboard.putBoolean("Elevator/At Top", atTop());
+		SmartDashboard.putBoolean("Elevator/At Bottom", atBottom());
 	}
+
 }
