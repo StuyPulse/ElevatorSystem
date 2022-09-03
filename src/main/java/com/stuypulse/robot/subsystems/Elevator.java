@@ -50,11 +50,11 @@ public class Elevator extends IElevator {
 	}
 
 	public double getVelocity() { 
-		return sideMaster.getSelectedSensorVelocity() * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER / 60.0;
+		return sideMaster.getSelectedSensorVelocity(); // * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER / 60.0;
 	}
 
 	public double getHeight() {
-		return sideMaster.getSelectedSensorPosition() * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER;
+		return sideMaster.getSelectedSensorPosition(); // * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER;
 	}
 
 	public boolean atTop() {
@@ -69,7 +69,7 @@ public class Elevator extends IElevator {
 	// 	targetState = state;
 	// }
 
-	public void setVoltage(double voltage) {
+	private void setVoltage(double voltage) {
 		if (atBottom() && voltage < 0) {
 			DriverStation.reportWarning("Bottom Limit Switch reached", false);
 			sideMaster.setSelectedSensorPosition(0);
@@ -86,6 +86,10 @@ public class Elevator extends IElevator {
 		left.setVoltage(voltage);
 		right.setVoltage(voltage);
 	}
+
+    public void setHeight(double height) {
+
+    }
 
 	@Override
 	public void periodic() {

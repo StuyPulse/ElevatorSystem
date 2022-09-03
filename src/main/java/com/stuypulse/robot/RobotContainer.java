@@ -5,8 +5,8 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.commands.elevator.ElevatorDrive;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.Elevator;
 import com.stuypulse.robot.subsystems.IElevator;
 import com.stuypulse.robot.subsystems.SimElevator;
@@ -18,6 +18,7 @@ import com.stuypulse.stuylib.input.gamepads.keyboard.SimKeyGamepad;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
 
@@ -44,7 +45,6 @@ public class RobotContainer {
   /****************/
 
   private void configureDefaultCommands() {
-    elevator.setDefaultCommand(new ElevatorDrive(elevator, driver));
   }
 
   /***************/
@@ -52,7 +52,8 @@ public class RobotContainer {
   /***************/
 
   private void configureButtonBindings() {
-    // driver.getBottomButton().whileHeld(new ToHome(lift));
+    driver.getBottomButton().whenPressed(new InstantCommand(() -> elevator.setHeight(0.5), elevator));
+    driver.getTopButton().whenPressed(new InstantCommand(() -> elevator.setHeight(2.0), elevator));
   }
 
   /**************/

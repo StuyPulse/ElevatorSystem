@@ -8,7 +8,7 @@ public abstract class IElevator extends SubsystemBase {
         setSubsystem("Elevator");
     }
 
-    public abstract void setVoltage(double volts);
+    public abstract void setHeight(double heightMeters);
     
     public abstract double getHeight();
     public abstract double getVelocity();
