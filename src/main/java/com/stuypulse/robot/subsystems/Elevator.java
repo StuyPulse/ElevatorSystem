@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Motors.Config;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
@@ -96,11 +97,14 @@ public class Elevator extends IElevator {
 	private void setVoltage(double voltage) {
 		if (atBottom() && voltage < 0) {
 			DriverStation.reportWarning("Bottom Limit Switch reached", false);
-			sideMaster.setSelectedSensorPosition(0);
+
+			sideMaster.setSelectedSensorPosition(Settings.Elevator.MIN_HEIGHT);
 			
 			voltage = 0.0;
 		} else if (atTop() && voltage > 0) {
 			DriverStation.reportWarning("Top Limit Switch reached", false);
+			
+			sideMaster.setSelectedSensorPosition(Settings.Elevator.MAX_HEIGHT);
 
 			voltage = 0.0;
 		} 
