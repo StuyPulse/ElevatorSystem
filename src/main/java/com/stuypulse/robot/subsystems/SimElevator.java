@@ -15,24 +15,12 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 
+import static com.stuypulse.robot.constants.Settings.Elevator.PID.*;
+import static com.stuypulse.robot.constants.Settings.Elevator.FF.*;
+import static com.stuypulse.robot.constants.Settings.Elevator.MotionProfile.*;
+import static com.stuypulse.robot.constants.Settings.Elevator.*;
+
 public class SimElevator extends IElevator {
-
-    /** Constants */
-
-    private static final double kMinHeight = 0.5;
-    private static final double kMaxHeight = 2.8;
-
-    private static final double kG = 0.50;
-    private static final double kS = 0.10;
-    private static final double kV = 0.30;
-    private static final double kA = 0.06;
-
-    private static final double kP = 2.0;
-    private static final double kI = 0.1;
-    private static final double kD = 0.0;
-
-    private static final double kMaxVelocity = 3.0;
-    private static final double kMaxAcceleration = 3.0;
 
     /** Elevator */
 
@@ -46,14 +34,14 @@ public class SimElevator extends IElevator {
     // private Mechanism2d
 
     public SimElevator() {
-        sim = new ElevatorSim(DCMotor.getCIM(4), 106.94, 2.5, 1.435, kMinHeight, kMaxHeight);
+        sim = new ElevatorSim(DCMotor.getCIM(4), 106.94, 2.5, 1.435, MIN_HEIGHT, MAX_HEIGHT);
         height = 0.0;
         velocity = 0.0;
 
         controller = new Feedforward.Elevator(kG, kS, kV, kA).position()
             .add(new PIDController(kP, kI, kD))
-            .setSetpointFilter(new MotionProfile(kMaxVelocity, kMaxAcceleration));
-        targetHeight = kMinHeight;
+            .setSetpointFilter(new MotionProfile(VEL_LIMIT, ACCEL_LIMIT));
+        targetHeight = MIN_HEIGHT;
     }
 
     @Override
@@ -79,10 +67,10 @@ public class SimElevator extends IElevator {
     private void setVoltage(double volts) {
         if (sim.hasHitUpperLimit() && volts > 0.0) {
             volts = 0.0;
-            sim.setState(VecBuilder.fill(kMaxHeight, 0.0));
+            sim.setState(VecBuilder.fill(MAX_HEIGHT, 0.0));
         } else if (sim.hasHitLowerLimit() && volts < 0.0) {
             volts = 0.0;
-            sim.setState(VecBuilder.fill(kMinHeight, 0.0));
+            sim.setState(VecBuilder.fill(MIN_HEIGHT, 0.0));
         }
 
         double batteryVoltage = RobotController.getBatteryVoltage();
