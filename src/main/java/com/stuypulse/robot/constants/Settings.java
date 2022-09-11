@@ -5,6 +5,8 @@
 
 package com.stuypulse.robot.constants;
 
+import com.stuypulse.stuylib.network.SmartNumber;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
@@ -24,5 +26,22 @@ public final class Settings {
 	public static double DT = 0.02;
 
 	public interface Elevator {
+		public interface PID {
+			SmartNumber kP = new SmartNumber("kP", 0.0001);
+			SmartNumber kI = new SmartNumber("kI", 0.0000001);
+			SmartNumber kD = new SmartNumber("kD", 0.0001);
+		}
+
+		public interface FF {
+			SmartNumber kG = new SmartNumber("kG", 0.001);
+			SmartNumber kS = new SmartNumber("kS", 0.0001);
+			SmartNumber kV = new SmartNumber("kV", 0.0001);
+			SmartNumber kA = new SmartNumber("kA", 0.0001);
+		}
+
+		public interface MotionProfile {
+			SmartNumber VEL_LIMIT = new SmartNumber("VelLimit", 15);
+			SmartNumber ACCEL_LIMIT = new SmartNumber("AccelLimit", 3);
+		}
 	}
 }

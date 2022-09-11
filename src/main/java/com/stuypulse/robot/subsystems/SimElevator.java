@@ -57,8 +57,13 @@ public class SimElevator extends IElevator {
     }
 
     @Override
-    public void setHeight(double heightMeters) {
+    public void setTargetHeight(double heightMeters) {
         targetHeight = heightMeters;
+    }
+
+    @Override
+    public double getTargetHeight() {
+        return targetHeight;
     }
 
     @Override
@@ -90,7 +95,7 @@ public class SimElevator extends IElevator {
 
         builder.addDoubleProperty("Height", this::getHeight, null);
         builder.addDoubleProperty("Velocity", this::getVelocity, null);
-        builder.addDoubleProperty("Target Height", () -> targetHeight, this::setHeight);
+        builder.addDoubleProperty("Target Height", this::getTargetHeight, this::setTargetHeight);
     }
 
     @Override

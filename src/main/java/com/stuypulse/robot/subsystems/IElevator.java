@@ -8,8 +8,16 @@ public abstract class IElevator extends SubsystemBase {
         setSubsystem("Elevator");
     }
 
-    public abstract void setHeight(double heightMeters);
+    public abstract void setTargetHeight(double heightMeters);
+    public final void addTargetHeight(double delta) {
+        setTargetHeight(getTargetHeight() + delta);
+    }
+
+    public final boolean isReady(double error) {
+        return Math.abs(getTargetHeight() - getHeight()) < error;
+    }
     
+    public abstract double getTargetHeight();
     public abstract double getHeight();
     public abstract double getVelocity();
 
