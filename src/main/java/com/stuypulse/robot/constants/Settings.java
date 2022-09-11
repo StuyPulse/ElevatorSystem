@@ -25,6 +25,8 @@ public final class Settings {
 		
 		double DRIVE_SPEED = Units.feetToMeters(1);
 
+		SmartNumber MAX_HEIGHT_ERROR = new SmartNumber("Max Height Error", 0.05);
+
 		public interface Encoder {
 			double ENCODER_MULTIPLIER = 1;
 		}
