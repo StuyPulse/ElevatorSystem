@@ -38,5 +38,10 @@ public final class Settings {
 			SmartNumber kV = new SmartNumber("kV", 0.0001);
 			SmartNumber kA = new SmartNumber("kA", 0.0001);
 		}
+
+		public interface MotionProfile {
+			SmartNumber VEL_LIMIT = new SmartNumber("VelLimit", 15);
+			SmartNumber ACCEL_LIMIT = new SmartNumber("AccelLimit", 3);
+		}
 	}
 }

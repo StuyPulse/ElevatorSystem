@@ -13,9 +13,11 @@ import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.Feedforward;
 import com.stuypulse.stuylib.network.SmartNumber;
+import com.stuypulse.stuylib.streams.filters.MotionProfile;
 
 import static com.stuypulse.robot.constants.Settings.Elevator.PID.*;
 import static com.stuypulse.robot.constants.Settings.Elevator.FF.*;
+import static com.stuypulse.robot.constants.Settings.Elevator.MotionProfile.*;
 
 
 public class Elevator extends IElevator {
@@ -58,7 +60,9 @@ public class Elevator extends IElevator {
 		bottomLimit = new DigitalInput(Ports.Elevator.BOTTOM_LIMIT_SWITCH);
 
 		// Control
-		position = new PIDController(kP, kI, kD).add(new Feedforward.Elevator(kG, kS, kV, kA).position());
+		position = new PIDController(kP, kI, kD).
+					add(new Feedforward.Elevator(kG, kS, kV, kA).position());
+		position.setOutputFilter(new MotionProfile(VEL_LIMIT, ACCEL_LIMIT));
 		targetHeight = new SmartNumber("Elevator Target Height", 0);
 	}
 
