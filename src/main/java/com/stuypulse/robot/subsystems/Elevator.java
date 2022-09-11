@@ -61,8 +61,8 @@ public class Elevator extends IElevator {
 
 		// Control
 		position = new PIDController(kP, kI, kD).
-					add(new Feedforward.Elevator(kG, kS, kV, kA).position());
-		position.setOutputFilter(new MotionProfile(VEL_LIMIT, ACCEL_LIMIT));
+					add(new Feedforward.Elevator(kG, kS, kV, kA).position()).
+					setOutputFilter(new MotionProfile(VEL_LIMIT, ACCEL_LIMIT));
 		targetHeight = new SmartNumber("Elevator Target Height", 0);
 	}
 
