@@ -23,6 +23,11 @@ public class ElevatorToHeight extends CommandBase {
         addRequirements(elevator);
     }
 
+    public ElevatorToHeight untilReady() {
+        instant = false;
+        return this;
+    }
+
     @Override
     public void initialize() {
         elevator.setTargetHeight(height);
