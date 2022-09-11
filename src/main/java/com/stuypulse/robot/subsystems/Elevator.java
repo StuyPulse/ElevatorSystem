@@ -52,8 +52,8 @@ public class Elevator extends IElevator {
 		// Encoder
 
 		sideMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		sideMaster.setSelectedSensorPosition(0);
 		sideMaster.setSensorPhase(false);
+		setEncoder(Settings.Elevator.MIN_HEIGHT);
 
 		// Limit switches
 
@@ -69,18 +69,23 @@ public class Elevator extends IElevator {
 
 	@Override
 	public double getVelocity() { 
-		return sideMaster.getSelectedSensorVelocity(); // * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER / 60.0;
+		return sideMaster.getSelectedSensorVelocity() * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER / 60.0;
 	}
 
 	@Override
 	public double getHeight() {
-		return sideMaster.getSelectedSensorPosition(); // * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER;
+		return sideMaster.getSelectedSensorPosition() * -Settings.Elevator.Encoder.ENCODER_MULTIPLIER;
 	}
 
 	@Override
 	public double getTargetHeight() {
 		return targetHeight.get();
 	}
+
+	@Override
+    public void setTargetHeight(double height) {
+		targetHeight.set(height);
+    }
 
 	public boolean atTop() {
 		return !topLimit.get();
@@ -90,21 +95,21 @@ public class Elevator extends IElevator {
 		return !bottomLimit.get();
 	}
 
-	// public void setTargetState(State state) {
-	// 	targetState = state;
-	// }
+	private void setEncoder(double heightMeters) {
+		sideMaster.setSelectedSensorPosition(heightMeters / -Settings.Elevator.Encoder.ENCODER_MULTIPLIER);
+	}
 
 	private void setVoltage(double voltage) {
 		if (atBottom() && voltage < 0) {
 			DriverStation.reportWarning("Bottom Limit Switch reached", false);
 
-			sideMaster.setSelectedSensorPosition(Settings.Elevator.MIN_HEIGHT);
+			setEncoder(Settings.Elevator.MIN_HEIGHT);
 			
 			voltage = 0.0;
 		} else if (atTop() && voltage > 0) {
 			DriverStation.reportWarning("Top Limit Switch reached", false);
 			
-			sideMaster.setSelectedSensorPosition(Settings.Elevator.MAX_HEIGHT);
+			setEncoder(Settings.Elevator.MAX_HEIGHT);
 
 			voltage = 0.0;
 		} 
@@ -114,11 +119,6 @@ public class Elevator extends IElevator {
 		left.setVoltage(voltage);
 		right.setVoltage(voltage);
 	}
-
-	@Override
-    public void setTargetHeight(double height) {
-		targetHeight.set(height);
-    }
 
 	@Override
 	public void periodic() {

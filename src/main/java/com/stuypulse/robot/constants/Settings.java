@@ -25,6 +25,10 @@ public final class Settings {
 		
 		double DRIVE_SPEED = Units.feetToMeters(1);
 
+		public interface Encoder {
+			double ENCODER_MULTIPLIER = 1;
+		}
+
 		public interface PID {
 			SmartNumber kP = new SmartNumber("kP", 2.0);
 			SmartNumber kI = new SmartNumber("kI", 0.1);
