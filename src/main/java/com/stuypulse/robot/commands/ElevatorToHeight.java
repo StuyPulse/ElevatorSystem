@@ -23,7 +23,7 @@ public class ElevatorToHeight extends CommandBase {
         addRequirements(elevator);
     }
 
-    public ElevatorToHeight untilReady() {
+    public final ElevatorToHeight untilReady() {
         instant = false;
         return this;
     }
