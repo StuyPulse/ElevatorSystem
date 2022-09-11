@@ -52,8 +52,8 @@ public class RobotContainer {
   /***************/
 
   private void configureButtonBindings() {
-    driver.getBottomButton().whenPressed(new InstantCommand(() -> elevator.setHeight(0.5), elevator));
-    driver.getTopButton().whenPressed(new InstantCommand(() -> elevator.setHeight(2.0), elevator));
+    driver.getBottomButton().whenPressed(new InstantCommand(() -> elevator.setTargetHeight(0.5), elevator));
+    driver.getTopButton().whenPressed(new InstantCommand(() -> elevator.setTargetHeight(2.0), elevator));
   }
 
   /**************/
