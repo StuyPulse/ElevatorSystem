@@ -16,6 +16,7 @@ import com.stuypulse.stuylib.control.feedforward.Feedforward;
 import com.stuypulse.stuylib.network.SmartNumber;
 import com.stuypulse.stuylib.streams.filters.MotionProfile;
 
+import static com.stuypulse.robot.constants.Settings.Elevator.*;
 import static com.stuypulse.robot.constants.Settings.Elevator.PID.*;
 import static com.stuypulse.robot.constants.Settings.Elevator.FF.*;
 import static com.stuypulse.robot.constants.Settings.Elevator.MotionProfile.*;
@@ -64,7 +65,7 @@ public class Elevator extends IElevator {
 		position = new PIDController(kP, kI, kD).
 					add(new Feedforward.Elevator(kG, kS, kV, kA).position()).
 					setOutputFilter(new MotionProfile(VEL_LIMIT, ACCEL_LIMIT));
-		targetHeight = new SmartNumber("Elevator Target Height", 0);
+		targetHeight = new SmartNumber("Elevator Target Height", MIN_HEIGHT);
 	}
 
 	@Override
@@ -103,13 +104,13 @@ public class Elevator extends IElevator {
 		if (atBottom() && voltage < 0) {
 			DriverStation.reportWarning("Bottom Limit Switch reached", false);
 
-			setEncoder(Settings.Elevator.MIN_HEIGHT);
+			setEncoder(MIN_HEIGHT);
 			
 			voltage = 0.0;
 		} else if (atTop() && voltage > 0) {
 			DriverStation.reportWarning("Top Limit Switch reached", false);
 			
-			setEncoder(Settings.Elevator.MAX_HEIGHT);
+			setEncoder(MAX_HEIGHT);
 
 			voltage = 0.0;
 		} 
