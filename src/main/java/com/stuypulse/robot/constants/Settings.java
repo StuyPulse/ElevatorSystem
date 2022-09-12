@@ -7,14 +7,7 @@ package com.stuypulse.robot.constants;
 
 import com.stuypulse.stuylib.network.SmartNumber;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 /*-
  * File containing tunable settings for every subsystem on the robot.
@@ -26,21 +19,33 @@ public final class Settings {
 	public static double DT = 0.02;
 
 	public interface Elevator {
+
+		double MIN_HEIGHT = 0.5;
+		double MAX_HEIGHT = 2.8;
+		
+		double DRIVE_SPEED = Units.feetToMeters(1);
+
+		SmartNumber MAX_HEIGHT_ERROR = new SmartNumber("Max Height Error", 0.05);
+
+		public interface Encoder {
+			double ENCODER_MULTIPLIER = 6.175038019510467E-5 * 0.0254;
+		}
+
 		public interface PID {
-			SmartNumber kP = new SmartNumber("kP", 0.0001);
-			SmartNumber kI = new SmartNumber("kI", 0.0000001);
-			SmartNumber kD = new SmartNumber("kD", 0.0001);
+			SmartNumber kP = new SmartNumber("kP", 2.0);
+			SmartNumber kI = new SmartNumber("kI", 0.1);
+			SmartNumber kD = new SmartNumber("kD", 0.0);
 		}
 
 		public interface FF {
-			SmartNumber kG = new SmartNumber("kG", 0.001);
-			SmartNumber kS = new SmartNumber("kS", 0.0001);
-			SmartNumber kV = new SmartNumber("kV", 0.0001);
-			SmartNumber kA = new SmartNumber("kA", 0.0001);
+			SmartNumber kG = new SmartNumber("kG", 0.50);
+			SmartNumber kS = new SmartNumber("kS", 0.10);
+			SmartNumber kV = new SmartNumber("kV", 0.30);
+			SmartNumber kA = new SmartNumber("kA", 0.06);
 		}
 
 		public interface MotionProfile {
-			SmartNumber VEL_LIMIT = new SmartNumber("VelLimit", 15);
+			SmartNumber VEL_LIMIT = new SmartNumber("VelLimit", 3);
 			SmartNumber ACCEL_LIMIT = new SmartNumber("AccelLimit", 3);
 		}
 	}
