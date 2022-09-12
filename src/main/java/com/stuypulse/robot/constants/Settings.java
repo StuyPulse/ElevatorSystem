@@ -28,7 +28,7 @@ public final class Settings {
 		SmartNumber MAX_HEIGHT_ERROR = new SmartNumber("Max Height Error", 0.05);
 
 		public interface Encoder {
-			double ENCODER_MULTIPLIER = 6.175038019510467E-5 / (1 / 106.94) * Units.inchesToMeters(1);
+			double ENCODER_MULTIPLIER = 6.175038019510467E-5;
 		}
 
 		public interface PID {
