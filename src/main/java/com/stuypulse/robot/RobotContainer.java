@@ -5,6 +5,9 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.commands.ElevatorDrive;
+import com.stuypulse.robot.commands.ElevatorToBottom;
+import com.stuypulse.robot.commands.ElevatorToTop;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.Elevator;
@@ -45,6 +48,7 @@ public class RobotContainer {
   /****************/
 
   private void configureDefaultCommands() {
+    elevator.setDefaultCommand(new ElevatorDrive(elevator, driver));
   }
 
   /***************/
@@ -52,8 +56,8 @@ public class RobotContainer {
   /***************/
 
   private void configureButtonBindings() {
-    driver.getBottomButton().whenPressed(new InstantCommand(() -> elevator.setTargetHeight(0.5), elevator));
-    driver.getTopButton().whenPressed(new InstantCommand(() -> elevator.setTargetHeight(2.0), elevator));
+    driver.getBottomButton().whenPressed(new ElevatorToBottom(elevator));
+    driver.getTopButton().whenPressed(new ElevatorToTop(elevator));
   }
 
   /**************/
