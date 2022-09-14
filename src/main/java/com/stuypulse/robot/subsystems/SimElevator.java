@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 import static com.stuypulse.robot.constants.Settings.Elevator.PID.*;
 import static com.stuypulse.robot.constants.Settings.Elevator.FF.*;
@@ -32,6 +35,7 @@ public class SimElevator extends IElevator {
     private double targetHeight;
 
     // private Mechanism2d
+    private final MechanismLigament2d elevator;
 
     public SimElevator() {
         sim = new ElevatorSim(DCMotor.getCIM(4), 106.94, 2.5, 1.435, MIN_HEIGHT, MAX_HEIGHT);
@@ -42,6 +46,11 @@ public class SimElevator extends IElevator {
             .add(new PIDController(kP, kI, kD))
             .setSetpointFilter(new MotionProfile(VEL_LIMIT, ACCEL_LIMIT));
         targetHeight = MIN_HEIGHT;
+
+        Mechanism2d mechanism2d = new Mechanism2d(3, 4);
+        MechanismRoot2d root = mechanism2d.getRoot("Elevator Root", 2, 0);
+
+        elevator = root.append(new MechanismLigament2d("Elevator Arm", targetHeight, 90));
     }
 
     @Override
@@ -97,6 +106,8 @@ public class SimElevator extends IElevator {
 
         height = sim.getPositionMeters();
         velocity = sim.getVelocityMetersPerSecond();
+
+        elevator.setLength(height);
 
         RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(sim.getCurrentDrawAmps()));
     }
