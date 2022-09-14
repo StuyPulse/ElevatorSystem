@@ -6,13 +6,8 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.ElevatorDrive;
-import com.stuypulse.robot.commands.ElevatorToBottom;
-import com.stuypulse.robot.commands.ElevatorToTop;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.Elevator;
-import com.stuypulse.robot.subsystems.IElevator;
-import com.stuypulse.robot.subsystems.SimElevator;
 import com.stuypulse.robot.util.BootlegXbox;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
@@ -21,12 +16,11 @@ import com.stuypulse.stuylib.input.gamepads.keyboard.SimKeyGamepad;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
 
   // Subsystem
-  public final IElevator elevator = new SimElevator();
+  public final Elevator elevator = new Elevator();
   // Gamepads
   public final Gamepad driver = new SimKeyGamepad();
                                 // new BootlegXbox(Ports.Gamepad.DRIVER);
@@ -56,8 +50,6 @@ public class RobotContainer {
   /***************/
 
   private void configureButtonBindings() {
-    driver.getBottomButton().whenPressed(new ElevatorToBottom(elevator));
-    driver.getTopButton().whenPressed(new ElevatorToTop(elevator));
   }
 
   /**************/
